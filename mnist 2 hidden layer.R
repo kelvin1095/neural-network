@@ -51,8 +51,6 @@ t_function <- function(x){
 train_target <- train_number %>% apply(1, t_function) %>% t()
 test_target <- test_number %>% apply(1, t_function) %>% t()
 
-output_label <- c("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")
-
 ## Split data
 t_input <- input[1:n_train,]
 t_target <- target[1:n_train,]
@@ -102,7 +100,7 @@ forward_propagation <- function(input, param){
 backward_propagation <- function(input, param, output, target, alpha){
   n_train <- nrow(input)
   
-  dZ3 <- (target - output$A3)
+  dZ3 <- (output$A3 - target)/n_train
   dW3 <- t(output$A2) %*% dZ3
   db3 <- colSums(dZ3)
   
@@ -114,12 +112,12 @@ backward_propagation <- function(input, param, output, target, alpha){
   dW1 <- t(input) %*% dZ1
   db1 <- colSums(dZ1)
   
-  w1 <- param$w1 + alpha * dW1/n_train
-  b1 <- param$b1 + alpha * db1/n_train
-  w2 <- param$w2 + alpha * dW2/n_train
-  b2 <- param$b2 + alpha * db2/n_train
-  w3 <- param$w3 + alpha * dW3/n_train
-  b3 <- param$b3 + alpha * db3/n_train
+  w1 <- param$w1 - alpha * dW1
+  b1 <- param$b1 - alpha * db1
+  w2 <- param$w2 - alpha * dW2
+  b2 <- param$b2 - alpha * db2
+  w3 <- param$w3 - alpha * dW3
+  b3 <- param$b3 - alpha * db3
   
   return(list(w1 = w1,
               b1 = b1,
@@ -186,13 +184,6 @@ my_function <- function(x, y) {
 }
 
 # Apply the function to corresponding elements of two columns from different matrices
-my_function(prediction[,1], test_target[,1])
-my_function(prediction[,2], test_target[,2])
-my_function(prediction[,3], test_target[,3])
-my_function(prediction[,4], test_target[,4])
-my_function(prediction[,5], test_target[,5])
-my_function(prediction[,6], test_target[,6])
-my_function(prediction[,7], test_target[,7])
-my_function(prediction[,8], test_target[,8])
-my_function(prediction[,9], test_target[,9])
-my_function(prediction[,10], test_target[,10])
+for (i in 1:10) {
+    my_function(prediction[,i], test_target[,i])
+}
